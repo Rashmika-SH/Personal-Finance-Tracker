@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personal Finance Tracker</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1 class="title"><i class="fas fa-wallet"></i> Personal Finance Tracker</h1>
+        <p class="subtitle">Track, analyze, and manage your expenses efficiently</p>
+      </header>
+
+      <div class="dashboard">
+        <div class="summary-cards">
+          <div class="card total-card">
+            <h3>Total Expenses</h3>
+            <p id="total-amount">$0</p>
+          </div>
+          <div class="card category-card">
+            <h3>Top Category</h3>
+            <p id="top-category">None</p>
+          </div>
+          <div class="card date-card">
+            <h3>Last Updated</h3>
+            <p id="last-updated">Never</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="expense-form">
+        <div class="form-group">
+          <label for="expense-name">Expense Name</label>
+          <input type="text" id="expense-name" placeholder="What did you spend on?" />
+        </div>
+        <div class="form-group">
+          <label for="expense-amount">Amount</label>
+          <input type="number" id="expense-amount" placeholder="How much?" />
+        </div>
+        <div class="form-group">
+          <label for="expense-category">Category</label>
+          <select id="expense-category">
+            <option value="Food">Food & Dining</option>
+            <option value="Housing">Housing & Rent</option>
+            <option value="Transportation">Transportation</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Utilities">Utilities</option>
+            <option value="Healthcare">Healthcare</option>
+            <option value="Others">Others</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="expense-date">Date</label>
+          <input type="date" id="expense-date" />
+        </div>
+        <button id="add-expense-btn" onclick="addExpense()">
+          <i class="fas fa-plus"></i> Add Expense
+        </button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="list">
+          <i class="fas fa-list"></i> List View
+        </button>
+        <button class="tab-btn" data-tab="chart">
+          <i class="fas fa-chart-pie"></i> Analytics
+        </button>
+        <button class="tab-btn" data-tab="budget">
+          <i class="fas fa-bullseye"></i> Budget
+        </button>
+      </div>
+
+      <div class="tab-content">
+        <div id="list-tab" class="tab-pane active">
+          <div class="expense-list">
+            <div class="list-header">
+              <h2>Your Expenses</h2>
+              <div class="filter-sort">
+                <select id="category-filter">
+                  <option value="All">All Categories</option>
+                  <option value="Food">Food & Dining</option>
+                  <option value="Housing">Housing & Rent</option>
+                  <option value="Transportation">Transportation</option>
+                  <option value="Entertainment">Entertainment</option>
+                  <option value="Shopping">Shopping</option>
+                  <option value="Utilities">Utilities</option>
+                  <option value="Healthcare">Healthcare</option>
+                  <option value="Others">Others</option>
+                </select>
+                <select id="sort-by">
+                  <option value="date-desc">Newest First</option>
+                  <option value="date-asc">Oldest First</option>
+                  <option value="amount-desc">Highest Amount</option>
+                  <option value="amount-asc">Lowest Amount</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="expense-table"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="chart-tab" class="tab-pane">
+          <div class="chart-container">
+            <h2>Expense Analytics</h2>
+            <div class="chart-types">
+              <button class="chart-type-btn active" data-chart="pie">
+                <i class="fas fa-chart-pie"></i> Category
+              </button>
+              <button class="chart-type-btn" data-chart="bar">
+                <i class="fas fa-chart-bar"></i> Monthly
+              </button>
+              <button class="chart-type-btn" data-chart="line">
+                <i class="fas fa-chart-line"></i> Trends
+              </button>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="expense-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div id="budget-tab" class="tab-pane">
+          <div class="budget-container">
+            <h2>Budget Management</h2>
+            <div class="budget-form">
+              <div class="form-group">
+                <label for="budget-category">Category</label>
+                <select id="budget-category">
+                  <option value="Food">Food & Dining</option>
+                  <option value="Housing">Housing & Rent</option>
+                  <option value="Transportation">Transportation</option>
+                  <option value="Entertainment">Entertainment</option>
+                  <option value="Shopping">Shopping</option>
+                  <option value="Utilities">Utilities</option>
+                  <option value="Healthcare">Healthcare</option>
+                  <option value="Others">Others</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="budget-amount">Monthly Limit</label>
+                <input type="number" id="budget-amount" placeholder="Set your budget limit" />
+              </div>
+              <button onclick="setBudget()">
+                <i class="fas fa-save"></i> Set Budget
+              </button>
+            </div>
+            <div class="budget-progress" id="budget-progress-container">
+              <!-- Budget progress bars will be added here dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="action-btn export-btn" onclick="exportCSV()">
+          <i class="fas fa-file-export"></i> Export as CSV
+        </button>
+        <button class="action-btn" onclick="clearAllData()">
+          <i class="fas fa-trash-alt"></i> Clear All Data
+        </button>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
